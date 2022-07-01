@@ -23,7 +23,7 @@ class AwesomeProcessor:
         cool_df['total_part_per_name'] = df.groupby(['part_id'])['part_id'].transform('nunique')
         cool_df['total_part_per_name'] = df['part_id'].value_counts()
         cool_df['total_part_cost'] = df['total_part_cost']
-        self.normelize(cool_df, 'total_part_per_name', 'total_part_cost', )
+        self.normelize(cool_df, 'total_part_per_name', 'total_part_cost', 5, 10)
         #column part importency by price
 
         #total cost per visit
