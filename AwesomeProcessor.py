@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import pandas as pd
 import io
@@ -9,34 +11,36 @@ class AwesomeProcessor:
 
     def start_processing(self):
         df = pd.read_csv(self.__input_path)
-        #column delta dates
 
         cool_df = df.copy()
         try:
             cool_df['visit_date'] = pd.to_datetime(df['visit_date'])
             cool_df['original_install_date'] = pd.to_datetime(df['original_install_date'])
-            cool_df['installation_to_event_delta'] = df['visit_date'] - df['original_install_date']
+            cool_df['visit_date'] = pd.to_datetime(df['visit_date'])
+            cool_df['installation_to_event_delta'] = cool_df['visit_date'] - cool_df['original_install_date']
 
 
             #colums count parts replaced
 
-            cool_df['total_relaced_per_asset'] = df.groupby(['asset_id', 'part_id'])['part_id'].transform('nunique')
-            cool_df['customer_name'] = df['customer_name']
-            cool_df['total_relaced_per_asset'] = df.groupby(['asset_id', 'part_id'])['part_id'].transform('nunique')
-            cool_df['total_relaced_per_customer'] = df.groupby(['customer_name'])['part_id'].transform('nunique')
-            cool_df['part_total_replaced_per_customer'] = df.groupby(['customer_name'])['part_id'].transform('nunique')
-            cool_df['total_part_per_name'] = df.groupby(['part_id'])['part_id'].transform('nunique')
-            cool_df['total_part_per_name'] = df['part_id'].value_counts()
-            cool_df['total_part_cost'] = df['total_part_cost']
-            np.where(self.normelize(cool_df, 'total_part_per_name', 'total_part_cost', 5, 10) > 50,
-                     np.where())
-        #column part importency by price
-        except Exception as e:
-            print("exception: ", e)
+            cool_df['total_relaced_per_asset'] = cool_df.groupby(['asset_id', 'part_id'])['part_id'].transform('nunique')
+            cool_df['customer_name'] = cool_df['customer_name']
+            cool_df['total_relaced_per_asset'] = cool_df.groupby(['asset_id', 'part_id'])['part_id'].transform('nunique')
+            cool_df['total_relaced_per_customer'] = cool_df.groupby(['customer_name'])['part_id'].transform('nunique')
+            cool_df['part_total_replaced_per_customer'] = cool_df.groupby(['customer_name'])['part_id'].transform('nunique')
+            cool_df['total_part_per_name'] = cool_df.groupby(['part_name', 'producttype_name'])['part_name'].transform('count')
+
+            # column part importency by price
+            cool_df['part_importency'] = self.normelize(cool_df, 'total_part_per_name', 'part_cost', 5, 10)
+
+            #print the csv
+            cool_df(os.path.dirname(os.path.abspath(__file__))  + '/' + 'awesome.csv')
         #total cost per visit
         #normelize all columns
-
         #what exactly is the input the train the model
+
+        except Exception as e:
+            print("exception: ", e)
+
 
 
 
