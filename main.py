@@ -14,5 +14,5 @@ for top, dirs, files in os.walk(file_dir):
         input_file_path = os.path.join(file_dir, file_name)
 
         retrieve.get_files()
-        awesome = AwesomeProcessor(input_file_path)
-        awesome.start_processing()
+        # awesome = AwesomeProcessor(input_file_path)
+        # awesome.start_processing()
