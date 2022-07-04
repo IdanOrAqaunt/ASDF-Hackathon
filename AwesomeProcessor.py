@@ -9,6 +9,19 @@ class AwesomeProcessor:
     def __init__(self, input_csv: io.StringIO):
         self.__input_path =input_csv
 
+    '''assume df is sc_reference'''
+    def age_cost(self, df: pd.DataFrame):
+        df['age'] =\
+            pd.to_datetime(df['event_date']) - pd.to_datetime(df['original_install_date'])
+
+        df['period_age'] = round(df['age'].dt.days / 30)
+        df['period_age'] = df['period_age'].astype(int)
+        df['cases'] = df.groupby(['period_age'])['period_age'].transform(lambda x: x.count())
+        return df.groupby(['period_age']).agg(
+            cost_sum = pd.NamedAgg(column='total_cost', aggfunc='sum'),
+            cases = pd.NamedAgg(column='cases', aggfunc='count')
+        )
+
     def start_processing(self):
         df = pd.read_csv(self.__input_path)
 

@@ -1,6 +1,6 @@
 import io
 from datetime import datetime
-from typing import Callable
+from typing import Callable, List
 
 import boto3
 import smart_open
@@ -34,7 +34,7 @@ class S3Accessor:
         object.put(Body=file_content)
 
     def get_folders(self, path: str = ''):
-        items: [] = []
+        items: List[str] = []
         bucket = self.__s3.Bucket(self.__bucket_name)
 
         # if not path.endswith('/'):
@@ -60,7 +60,7 @@ class S3Accessor:
         return unique_objects
 
     def get_files(self, folder_url: str):
-        items: [] = []
+        items: List[str] = []
         my_bucket = self.__s3.Bucket(self.__bucket_name)
 
         if not folder_url.endswith('/'):
